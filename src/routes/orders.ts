@@ -1,4 +1,5 @@
  import { Router, Response } from 'express';
+import { body, validationResult } from 'express-validator';
 import Order from '@/models/Order';
 import Product from '@/models/Product';
 import User from '@/models/User';
@@ -7,8 +8,28 @@ import { AuthRequest } from '@/types';
 
 const router = Router();
 
+// Validation middleware for creating orders
+const validateOrder = [
+  body('items').isArray({ min: 1 }).withMessage('Items must be a non-empty array'),
+  body('items.*.productId').notEmpty().withMessage('Product ID is required'),
+  body('items.*.quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
+  body('shippingAddress.street').notEmpty().trim().withMessage('Street address is required'),
+  body('shippingAddress.city').notEmpty().trim().withMessage('City is required'),
+  body('shippingAddress.state').notEmpty().trim().withMessage('State is required'),
+  body('shippingAddress.zipCode').notEmpty().trim().withMessage('Zip code is required'),
+  body('shippingAddress.country').notEmpty().trim().withMessage('Country is required'),
+];
+
 // Create order
-router.post('/', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.post('/', authMiddleware, validateOrder, async (req: AuthRequest, res: Response) => {
+  // Check validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      errors: errors.array()
+    });
+  }
   try {
     const userId = req.user?.userId;
     const { items, shippingAddress } = req.body;

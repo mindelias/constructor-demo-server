@@ -45,7 +45,7 @@
   },
   "include": [
     "src/**/*",
-    "server.ts"
+    "scripts/**/*"
   ],
   "exclude": [
     "node_modules",

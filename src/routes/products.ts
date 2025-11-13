@@ -1,10 +1,20 @@
 import { Router, Request, Response } from 'express';
+import { body, validationResult } from 'express-validator';
 import { authMiddleware, optionalAuth } from '@/middleware/auth';
 import { getRedisClient } from '@/config/redis';
 import Product from '@/models/Product';
 import { ApiResponse, IProduct, AuthRequest } from '@/types';
 
 const router = Router();
+
+// Validation middleware for creating products
+const validateProduct = [
+  body('name').notEmpty().trim().withMessage('Product name is required'),
+  body('description').notEmpty().trim().withMessage('Description is required'),
+  body('price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
+  body('category').notEmpty().trim().withMessage('Category is required'),
+  body('inventory').isInt({ min: 0 }).withMessage('Inventory must be a non-negative integer'),
+];
 
 // Get all products with filters
 router.get('/', optionalAuth, async (req: AuthRequest, res: Response) => {
@@ -128,8 +138,17 @@ router.get('/:id', optionalAuth, async (req: AuthRequest, res: Response) => {
 });
 
 // Create product (admin only - simplified for demo)
-router.post('/', authMiddleware, async (req: AuthRequest, res: Response) => {
+router.post('/', authMiddleware, validateProduct, async (req: AuthRequest, res: Response) => {
   try {
+    // Check validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array()
+      });
+    }
+
     const productData = req.body;
     
     const product = new Product(productData);
