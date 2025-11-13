@@ -1,0 +1,13 @@
+# add files to ignore here
+node_modules/
+dist/
+.env
+.DS_Store
+.vscode/
+logs/
+npm-debug.log*
+yarn-error.log*
+coverage/
+.idea/
+*.local 
+*.log
