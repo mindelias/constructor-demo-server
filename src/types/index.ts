@@ -95,7 +95,7 @@ export interface AuthSocket extends Socket {
 
 // Recommendation types
 export interface RecommendationRequest {
-  user: IUser;
+  user: any; // Can be IUser or lean user object
   limit: number;
   category?: string | null;
   strategy: 'collaborative' | 'content-based' | 'hybrid';
@@ -126,6 +126,11 @@ export interface ApiResponse<T = any> {
     page?: number;
     limit?: number;
     total?: number;
+    totalPages?: number;
+    source?: string;
+    strategy?: string;
+    personalized?: boolean;
+    [key: string]: any;
   };
 }
 
