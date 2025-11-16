@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
 import { connectRedis } from './config/redis';
