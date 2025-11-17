@@ -21,7 +21,7 @@ const productSchema = new Schema<IProduct>({
     type: String, 
     required: [true, 'Product category is required'],
     enum: {
-      values: ['electronics', 'clothing', 'books', 'home', 'sports', 'toys', 'food', 'health', 'beauty', 'other'],
+      values: ['electronics', 'clothing', 'books', 'home', 'sports', 'accessories', 'toys', 'food', 'health', 'beauty', 'other'],
       message: '{VALUE} is not a valid category'
     }
   },
