@@ -41,7 +41,14 @@ A fully-featured monolithic e-commerce application built with Node.js, Express, 
 
 2. **Start all services**
    ```bash
-   docker-compose up -d
+   && docker-compose up -d &&
+   docker-compose logs -f app   (to see logs)      
+
+   ```
+2b. **ReStart all services**
+   ```bash
+    docker-compose down && docker-compose build --no-cache app && docker-compose up -d && docker-compose logs -f app
+            
    ```
 
 3. **Seed the database**

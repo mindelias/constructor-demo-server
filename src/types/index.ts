@@ -73,6 +73,16 @@ export interface IOrder extends Document {
     zipCode: string;
     country: string;
   };
+  paymentMethod?: "credit_card" | "paypal" | "cash_on_delivery" | "simulated";
+  paymentStatus?: "pending" | "completed" | "failed";
+  paymentReference?: string;
+  paidAt?: Date;
+  statusHistory: Array<{
+    status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+    timestamp: Date;
+    note: string;
+  }>;
+
   createdAt: Date;
   updatedAt: Date;
 }
