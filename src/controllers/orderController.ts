@@ -89,9 +89,20 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
       paymentStatus: "pending",
 
       paymentReference,
+      // statusHistory: [
+      //   {
+      //     status: "pending",
+      //     timestamp: new Date(),
+      //     note: "Order created",
+      //   },
+      // ],
     });
 
+    console.log("📝 Order BEFORE save:", JSON.stringify(order, null, 2)); 
+
     await order.save();
+    console.log("💾 Order AFTER save:", JSON.stringify(order, null, 2));   // ✅ ADD THIS
+
 
     // Update product inventory
 

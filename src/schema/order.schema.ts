@@ -61,19 +61,23 @@ export const orderSchema = new Schema<IOrder>(
     },
     paidAt: Date,
 
-    statusHistory: [
-      {
-        status: {
-          type: String,
-          enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+    statusHistory: {
+      type: [
+        {
+          status: {
+            type: String,
+            enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+          },
+          timestamp: {
+            type: Date,
+            default: Date.now,
+          },
+          note: String,
         },
-        timestamp: {
-          type: Date,
-          default: Date.now,
-        },
-        note: String,
-      },
-    ],
+      ],
+      default: [],
+      required: true,
+    },
   },
   {
     timestamps: true,
