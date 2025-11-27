@@ -385,10 +385,10 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response) => {
 
 const simulatePayment = async (req: any, res: any) => {
   try {
-    const { orderId } = req.params;
+    const { id } = req.params;
     const { success = true } = req.body;
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(id);
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
@@ -416,6 +416,13 @@ const simulatePayment = async (req: any, res: any) => {
             message: "Payment confirmed!",
             timestamp: new Date(),
           });
+          io.to(`order_${order._id}`).emit(`order:${order._id}:updated`, {
+            orderId: order._id,
+            status: order.status,
+            paymentStatus: order.paymentStatus,
+            message: "Payment confirmed!",
+            timestamp: new Date(),
+          });
 
           console.log(`✅ Payment simulated for order ${order._id}`);
         } else {
@@ -429,13 +436,22 @@ const simulatePayment = async (req: any, res: any) => {
           await order.save();
 
           const io = req.app.get("io");
-          io.to(`order_${order._id}`).emit("order:updated", {
+          io.to(`order_${order._id}`).emit(`order:${order._id}:updated`, {
             orderId: order._id,
             status: order.status,
             paymentStatus: order.paymentStatus,
             message: "Payment failed",
             timestamp: new Date(),
           });
+
+
+           
+           
+           
+           
+
+           
+          
         }
       } catch (error) {
         console.error("Webhook simulation error:", error);

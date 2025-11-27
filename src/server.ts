@@ -24,22 +24,20 @@ const io = new Server(server, {
 app.set('io', io);
 
 // Socket connection handler with proper typing
-io.on('connection', (socket: AuthSocket) => {
-  console.log('New client connected:', socket.id);
-  
-  socket.on('join_user_room', (userId: string) => {
-    socket.userId = userId;
-    socket.join(`user_${userId}`);
-    console.log(`User ${userId} joined their room`);
+io.on('connection', (socket) => {
+  console.log('✅ Client connected:', socket.id);
+
+  socket.on('subscribe:order', (orderId) => {
+    socket.join(`order_${orderId}`);
+    console.log(`📦 Client subscribed to order: ${orderId}`);
   });
-  
-  socket.on('track_event', (event: any) => {
-    // Type-safe event handling
-    console.log('Event tracked:', event);
+
+  socket.on('unsubscribe:order', (orderId) => {
+    socket.leave(`order_${orderId}`);
   });
-  
+
   socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
+    console.log('❌ Client disconnected:', socket.id);
   });
 });
 
